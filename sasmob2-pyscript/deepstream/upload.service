@@ -1,0 +1,18 @@
+[Unit]
+Description=Starting uploadazure.sh script at every reboot
+After=syslog.target network.target
+
+[Service]
+SuccessExitStatus=143
+
+User=jetson
+Group=jetson
+
+Type=simple
+
+WorkingDirectory=/home/jetson/sasmob2-pyscript/deepstream/
+ExecStart=/home/jetson/sasmob2-pyscript/deepstream/uploadazure.sh
+
+[Install]
+WantedBy=multi-user.target
+
