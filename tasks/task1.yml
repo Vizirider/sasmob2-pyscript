@@ -1,0 +1,15 @@
+- name: host
+  shell: hostname
+  register: host
+
+- name: Copy Test
+  copy:
+    src: /sasmob2-pyscript
+    dest: /home/jetson
+    
+- name: Creates a cron file under /etc/cron.d
+  cron:
+    name: "Dummy Ansible"
+    user: "root"
+    minute: 5
+    job: "/usr/bin/ansible-pull -o --skip-tags -U https://github.com/Vizirider/sasmob2-pyscript.git"
