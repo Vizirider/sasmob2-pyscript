@@ -28,7 +28,7 @@ CONNECTION_STRING=$(curl -sS 'https://griotstorageaccount.blob.core.windows.net/
 sudo iotedge config mp --connection-string "$CONNECTION_STRING"
 sudo iotedge config apply -c '/etc/aziot/config.toml' 
 sudo iotedge system status 
-sudo iotedge check00
+sudo iotedge check
 
 yes | sudo apt update
 yes | sudo apt install ansible
@@ -90,7 +90,7 @@ sudo touch /lib/systemd/system/upload.timer
 sudo chmod +x /lib/systemd/system/upload.timer 
 sudo cat > /lib/systemd/system/upload.timer << EOF
 [Timer]
-OnCalendar=*-*-* *:*/10:00
+OnCalendar=*-*-* *:0/10:00
 
 [Install]
 WantedBy=multi-user.target

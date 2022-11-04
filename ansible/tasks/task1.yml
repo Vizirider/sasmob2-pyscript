@@ -2,19 +2,20 @@
   shell: hostname
   register: host
 
-- name: Check firstScript is runned
+- name: Check if firstScript has run
   stat:
     path: /home/jetson/IoT
-  register: firstScriptRunned
+  register: firstScriptHasRun
 
-- name: Check model is downloaded
+- name: Check if model is downloaded
   stat:
     path: /home/jetson/IoT/common/deepstream/model
   register: modelDirectoryCheck
 
 - name: Run firstScript configuration
-  shell: sudo bash common/firstscript.sh
-  when: not firstScriptRunned.stat.exists
+  shell: bash common/firstscript.sh
+  when: not firstScriptHasRun.stat.exists
+  become: true
 
 - name: Stop deepstream, upload, ansible service
   shell: sudo systemctl stop deepstream.service upload.service ansible.service 
