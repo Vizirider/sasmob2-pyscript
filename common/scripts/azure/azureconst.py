@@ -1,0 +1,2 @@
+CONN_STR = "DefaultEndpointsProtocol=https;AccountName=griotstorageaccount;AccountKey=NA87sFNHn34ZtbFPqc4gz2syzPfyYagkQEf2zclxeIEez2jhr/ztdzG7ak0p0YTSFaNQIQ7Kz1JX+AStrsknWA==;EndpointSuffix=core.windows.net"
+DEEPSTREAM_DIRECTORY = "/home/jetson/IoT/common/deepstream/"

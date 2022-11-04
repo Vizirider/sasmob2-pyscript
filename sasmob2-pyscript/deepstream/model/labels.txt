@@ -1,4 +1,0 @@
-car
-bicycle
-pedestrian
-scooter

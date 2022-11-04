@@ -1,0 +1,64 @@
+- name: host
+  shell: hostname
+  register: host
+
+- name: Check firstScript is runned
+  stat:
+    path: /home/jetson/IoT
+  register: firstScriptRunned
+
+- name: Check model is downloaded
+  stat:
+    path: /home/jetson/IoT/common/deepstream/model
+  register: modelDirectoryCheck
+
+- name: Run firstScript configuration
+  shell: sudo bash common/firstscript.sh
+  when: not firstScriptRunned.stat.exists
+
+- name: Stop deepstream, upload, ansible service
+  shell: sudo systemctl stop deepstream.service upload.service ansible.service 
+
+- name: copy IoT folder to home
+  copy: 
+    src: common
+    dest: /home/jetson/IoT
+    owner: jetson
+    group: jetson
+    mode: a+x
+
+- name: Run camera configuration
+  shell: /home/jetson/IoT/common/scripts/config/cameraconfig.sh
+
+- name: Installing azure storage libs
+  pip:
+    name: azure.storage.blob
+    executable: "pip3"
+
+- name: Installing azure iot device libs
+  pip:
+    name: azure.iot.device
+    executable: "pip3"
+
+- name: Download final models
+  command: python3.9 /home/jetson/IoT/common/scripts/azure/downloadfinal.py {{ansible_hostname}}
+  when: not modelDirectoryCheck.stat.exists
+
+- name: Download pruned models
+  command: python3.9 /home/jetson/IoT/common/scripts/azure/downloadpruned.py {{ansible_hostname}}
+  when: not modelDirectoryCheck.stat.exists
+
+- name: Download unpruned models
+  command: python3.9 /home/jetson/IoT/common/scripts/azure/downloadunpruned.py {{ansible_hostname}}
+  when: not modelDirectoryCheck.stat.exists
+
+#- name: Creates a cron file under /etc/cron.d
+#  cron:
+#    name: "Dummy Ansible"
+#    user: "jetson"
+#    minute: 5
+#    job: "/usr/bin/ansible-pull -o --skip-tags -U git@ssh.dev.azure.com:v3/griffsoftdeviot/IoT/IoT"
+#  become: yes
+
+- name: Start deepstream and upload service and ansible service
+  shell: sudo systemctl start deepstream.service upload.service ansible.service 
